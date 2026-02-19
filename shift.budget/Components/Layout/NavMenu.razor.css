@@ -1,0 +1,69 @@
+.navbar-toggler {
+    appearance: none;
+    cursor: pointer;
+    width: 3.5rem;
+    height: 2.5rem;
+    color: var(--mud-palette-text-primary);
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    border: 1px solid var(--mud-palette-lines-default);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.92%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem var(--mud-palette-primary);
+}
+
+.navbar-toggler:checked {
+    background-color: var(--mud-palette-primary-darken);
+}
+
+.top-row {
+    min-height: 3.5rem;
+    background-color: var(--mud-palette-surface);
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+    color: var(--mud-palette-text-primary);
+}
+
+.nav-scrollable ::deep .mud-navmenu {
+    --mud-palette-text-primary: var(--mud-palette-text-primary);
+}
+
+.nav-scrollable ::deep .mud-nav-link {
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    color: var(--mud-palette-text-primary);
+}
+
+.nav-scrollable ::deep .mud-nav-link.active {
+    background-color: var(--mud-palette-action-default-hover);
+    color: var(--mud-palette-text-primary);
+}
+
+.nav-scrollable ::deep .mud-nav-link:hover {
+    background-color: var(--mud-palette-action-default-hover);
+}
+
+.nav-scrollable {
+    display: none;
+}
+
+.navbar-toggler:checked ~ .nav-scrollable {
+    display: block;
+}
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .nav-scrollable {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+
+        /* Allow sidebar to scroll for tall menus */
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}

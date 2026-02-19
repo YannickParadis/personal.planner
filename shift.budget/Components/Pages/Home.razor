@@ -1,0 +1,55 @@
+@page "/"
+@inject IncomeStore IncomeStore
+
+<PageTitle>Dashboard</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Dashboard</MudText>
+
+<MudPaper Class="pa-4">
+    <MudText Typo="Typo.h6" GutterBottom="true">Total Incomes by Month</MudText>
+
+    @if (_monthlyTotals.Count == 0)
+    {
+        <MudText Typo="Typo.body1">No income data available.</MudText>
+    }
+    else
+    {
+        <MudChart ChartType="ChartType.Bar"
+                  ChartSeries="_series"
+                  XAxisLabels="_xAxisLabels"
+                  Width="100%"
+                  Height="350px" />
+    }
+</MudPaper>
+
+@code {
+    private readonly List<ChartSeries> _series = [];
+    private string[] _xAxisLabels = [];
+    private List<IGrouping<DateTime, IncomeRow>> _monthlyTotals = [];
+
+    protected override void OnInitialized()
+    {
+        LoadChartData();
+    }
+
+    private void LoadChartData()
+    {
+        _monthlyTotals = IncomeStore.Incomes
+            .GroupBy(x => new DateTime(x.Date.Year, x.Date.Month, 1))
+            .OrderBy(x => x.Key)
+            .ToList();
+
+        _xAxisLabels = _monthlyTotals
+            .Select(x => x.Key.ToString("MMM yyyy"))
+            .ToArray();
+
+        _series.Clear();
+        _series.Add(new ChartSeries
+        {
+            Name = "Income Total",
+            Data = _monthlyTotals
+                .Select(x => Convert.ToDouble(x.Sum(i => i.Amount)))
+                .ToArray()
+        });
+    }
+}

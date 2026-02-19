@@ -1,0 +1,34 @@
+@inherits LayoutComponentBase
+@inject ThemeState ThemeState
+
+<MudThemeProvider Theme="_theme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
+<MudPopoverProvider />
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <MudSwitch T="bool"
+                       @bind-Value="ThemeState.IsDarkMode"
+                       Color="Color.Primary"
+                       Label="@(ThemeState.IsDarkMode ? "Dark" : "Light")" />
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">X</span>
+</div>
+
+@code {
+    private readonly MudTheme _theme = new();
+}

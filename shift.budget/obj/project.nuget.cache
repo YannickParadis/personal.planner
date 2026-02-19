@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "hNQ6sRj+i5c=",
+  "success": true,
+  "projectFilePath": "C:\\repos\\shift.budget\\shift.budget\\shift.budget.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\yanni\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.3\\microsoft.aspnetcore.app.internal.assets.10.0.3.nupkg.sha512",
+    "C:\\Users\\yanni\\.nuget\\packages\\mudblazor\\8.15.0\\mudblazor.8.15.0.nupkg.sha512"
+  ],
+  "logs": []
+}

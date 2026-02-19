@@ -1,0 +1,141 @@
+@page "/incomes"
+@inject IncomeStore IncomeStore
+
+<PageTitle>Incomes</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Incomes</MudText>
+
+<MudPaper Class="pa-4 mb-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+        <MudText Typo="Typo.h6">@(_editingIncomeId is null ? "Add Income" : "Edit Income")</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartAdd">
+            New Income
+        </MudButton>
+    </MudStack>
+
+    <MudGrid>
+        <MudItem xs="12" md="3">
+            <MudNumericField T="decimal"
+                             Label="Amount $"
+                             @bind-Value="_formAmount"
+                             Min="0"
+                             Immediate="true" />
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <MudNumericField T="decimal"
+                             Label="Tax Amount $"
+                             @bind-Value="_formTaxAmount"
+                             Min="0"
+                             Immediate="true" />
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <MudTextField Label="Type"
+                          @bind-Value="_formType"
+                          Immediate="true" />
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <MudDatePicker Label="Date"
+                           @bind-Date="_formDate"
+                           Editable="true" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudStack Row="true" Spacing="2">
+                <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveIncome">
+                    Save
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetForm">
+                    Cancel
+                </MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudPaper Class="pa-4">
+    <MudDataGrid T="IncomeRow"
+                 Items="IncomeStore.Incomes"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 Dense="true"
+                 Hover="true"
+                 Striped="true">
+        <Columns>
+            <PropertyColumn Property="x => x.Amount" Title="Amount $" Sortable="true" Filterable="true" Format="C2" />
+            <PropertyColumn Property="x => x.TaxAmount" Title="Tax Amount $" Sortable="true" Filterable="true" Format="C2" />
+            <PropertyColumn Property="x => x.Type" Title="Type" Sortable="true" Filterable="true" />
+            <PropertyColumn Property="x => x.Date" Title="Date" Sortable="true" Filterable="true" Format="yyyy-MM-dd" />
+            <TemplateColumn Title="Actions" Sortable="false" Filterable="false">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(() => StartEdit(context.Item))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   OnClick="@(() => DeleteIncome(context.Item.Id))" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudPaper>
+
+@code {
+    private int? _editingIncomeId;
+    private decimal _formAmount;
+    private decimal _formTaxAmount;
+    private string _formType = string.Empty;
+    private DateTime? _formDate = DateTime.Today;
+
+    private void StartAdd()
+    {
+        _editingIncomeId = null;
+        _formAmount = 0;
+        _formTaxAmount = 0;
+        _formType = string.Empty;
+        _formDate = DateTime.Today;
+    }
+
+    private void StartEdit(IncomeRow income)
+    {
+        _editingIncomeId = income.Id;
+        _formAmount = income.Amount;
+        _formTaxAmount = income.TaxAmount;
+        _formType = income.Type;
+        _formDate = income.Date;
+    }
+
+    private void SaveIncome()
+    {
+        if (string.IsNullOrWhiteSpace(_formType) || _formDate is null)
+        {
+            return;
+        }
+
+        if (_editingIncomeId is null)
+        {
+            IncomeStore.Add(_formAmount, _formTaxAmount, _formType, _formDate.Value);
+        }
+        else
+        {
+            IncomeStore.Update(_editingIncomeId.Value, _formAmount, _formTaxAmount, _formType, _formDate.Value);
+        }
+
+        ResetForm();
+    }
+
+    private void DeleteIncome(int incomeId)
+    {
+        IncomeStore.Delete(incomeId);
+
+        if (_editingIncomeId == incomeId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        StartAdd();
+    }
+}

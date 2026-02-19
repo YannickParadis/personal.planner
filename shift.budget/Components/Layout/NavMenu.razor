@@ -1,0 +1,24 @@
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">shift.budget</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <MudNavMenu Class="px-2 pt-2">
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
+            Dashboard
+        </MudNavLink>
+        <MudNavLink Href="/incomes" Icon="@Icons.Material.Filled.AttachMoney">
+            Incomes
+        </MudNavLink>
+        <MudNavLink Href="/montlhly-payments" Icon="@Icons.Material.Filled.CalendarMonth">
+            Montlhly Payments
+        </MudNavLink>
+        <MudNavLink Href="/savings" Icon="@Icons.Material.Filled.Savings">
+            Savings
+        </MudNavLink>
+    </MudNavMenu>
+</div>
