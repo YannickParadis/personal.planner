@@ -1,0 +1,245 @@
+@page "/monthly-payments"
+@inject MonthlyPaymentStore MonthlyPaymentStore
+
+<PageTitle>Monthly Payment List</PageTitle>
+
+<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <div>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Primary" />
+                <MudText Typo="Typo.h4" GutterBottom="false">Monthly Payment List</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Review and maintain recurring monthly payments.</MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.CalendarMonth" Label="true">
+            @($"{MonthlyPaymentStore.MonthlyPayments.Count} records")
+        </MudChip>
+    </MudStack>
+
+    <MudPaper Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">Monthly Payment Records</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    Total Planned: @MonthlyPaymentStore.MonthlyPayments.Sum(x => x.Amount).ToString("C2")
+                </MudText>
+            </MudStack>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartAdd" StartIcon="@Icons.Material.Filled.Add">
+                Add Monthly Payment
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudDataGrid T="MonthlyPaymentRow"
+                     Items="MonthlyPaymentStore.MonthlyPayments"
+                     RowClick="OnGridRowClick"
+                     Filterable="true"
+                     SortMode="SortMode.Multiple"
+                     RowsPerPage="20"
+                     Dense="true"
+                     Hover="true"
+                     Striped="true">
+            <Columns>
+                <PropertyColumn Property="x => x.Name" Title="Payment Name" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Type" Title="Category Type" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.PaymentType" Title="Type of Payment" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Amount" Title="Amount ($)" Sortable="true" Filterable="true" Format="C2" />
+                <PropertyColumn Property="x => x.Date" Title="Payment Date" Sortable="true" Filterable="true" Format="yyyy-MM-dd" />
+                <TemplateColumn Title="Status" Sortable="false" Filterable="false">
+                    <CellTemplate>
+                        <MudChip T="string"
+                                 Color="Color.Default"
+                                 Variant="Variant.Filled"
+                                 Size="Size.Small"
+                                 Style="@GetStatusChipStyle(context.Item.Date)"
+                                 Label="true">
+                            @(IsPaid(context.Item.Date) ? "Paid" : "Open")
+                        </MudChip>
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Actions" Sortable="false" Filterable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartEdit(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartCopy(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteMonthlyPayment(context.Item.Id))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="MonthlyPaymentRow" PageSizeOptions="new int[] { 20 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudStack>
+
+@if (_isFormPopupOpen)
+{
+    <div style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.45); z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <MudPaper Class="pa-4" Elevation="8" Style="width: min(640px, 100%);">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@(_isCopyMode ? Icons.Material.Filled.ContentCopy : (_editingMonthlyPaymentId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit))" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_isCopyMode ? "Copy Monthly Payment" : (_editingMonthlyPaymentId is null ? "Add Monthly Payment" : "Edit Monthly Payment"))</MudText>
+                </MudStack>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
+            </MudStack>
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Name"
+                                  @bind-Value="_formName"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Type"
+                                  @bind-Value="_formType"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Type of Payment"
+                                  @bind-Value="_formPaymentType"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="decimal"
+                                     Label="Amount $"
+                                     @bind-Value="_formAmount"
+                                     Min="0"
+                                     Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Date"
+                                   @bind-Date="_formDate"
+                                   Editable="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetForm" StartIcon="@Icons.Material.Filled.Close">
+                            Cancel
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveMonthlyPayment" StartIcon="@Icons.Material.Filled.Save">
+                            Save
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </div>
+}
+
+@code {
+    private int? _editingMonthlyPaymentId;
+    private bool _isCopyMode;
+    private bool _isFormPopupOpen;
+    private string _formName = string.Empty;
+    private string _formType = string.Empty;
+    private string _formPaymentType = string.Empty;
+    private decimal _formAmount;
+    private DateTime? _formDate = DateTime.Today;
+
+    private void StartAdd()
+    {
+        _editingMonthlyPaymentId = null;
+        _isCopyMode = false;
+        _formName = string.Empty;
+        _formType = string.Empty;
+        _formPaymentType = string.Empty;
+        _formAmount = 0;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartEdit(MonthlyPaymentRow monthlyPayment)
+    {
+        _editingMonthlyPaymentId = monthlyPayment.Id;
+        _isCopyMode = false;
+        _formName = monthlyPayment.Name;
+        _formType = monthlyPayment.Type;
+        _formPaymentType = monthlyPayment.PaymentType;
+        _formAmount = monthlyPayment.Amount;
+        _formDate = monthlyPayment.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartCopy(MonthlyPaymentRow monthlyPayment)
+    {
+        _editingMonthlyPaymentId = null;
+        _isCopyMode = true;
+        _formName = monthlyPayment.Name;
+        _formType = monthlyPayment.Type;
+        _formPaymentType = monthlyPayment.PaymentType;
+        _formAmount = monthlyPayment.Amount;
+        _formDate = monthlyPayment.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void OnGridRowClick(DataGridRowClickEventArgs<MonthlyPaymentRow> args)
+    {
+        if (args.MouseEventArgs.Detail == 2)
+        {
+            StartEdit(args.Item);
+        }
+    }
+
+    private void SaveMonthlyPayment()
+    {
+        if (string.IsNullOrWhiteSpace(_formName) ||
+            string.IsNullOrWhiteSpace(_formType) ||
+            string.IsNullOrWhiteSpace(_formPaymentType) ||
+            _formDate is null)
+        {
+            return;
+        }
+
+        if (_editingMonthlyPaymentId is null)
+        {
+            MonthlyPaymentStore.Add(_formName, _formType, _formPaymentType, _formAmount, _formDate.Value);
+        }
+        else
+        {
+            MonthlyPaymentStore.Update(_editingMonthlyPaymentId.Value, _formName, _formType, _formPaymentType, _formAmount, _formDate.Value);
+        }
+
+        ResetForm();
+    }
+
+    private void DeleteMonthlyPayment(int monthlyPaymentId)
+    {
+        MonthlyPaymentStore.Delete(monthlyPaymentId);
+
+        if (_editingMonthlyPaymentId == monthlyPaymentId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        _editingMonthlyPaymentId = null;
+        _isCopyMode = false;
+        _formName = string.Empty;
+        _formType = string.Empty;
+        _formPaymentType = string.Empty;
+        _formAmount = 0;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = false;
+    }
+
+    private static bool IsPaid(DateTime paymentDate) => paymentDate.Date <= DateTime.Today;
+
+    private static string GetStatusChipStyle(DateTime paymentDate) =>
+        IsPaid(paymentDate)
+            ? "background-color:var(--sb-status-done-bg);color:var(--sb-status-text);"
+            : "background-color:var(--sb-status-open-bg);color:var(--sb-status-text);";
+}

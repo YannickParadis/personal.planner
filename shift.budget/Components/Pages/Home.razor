@@ -1,55 +1,306 @@
-@page "/"
+@page "/dashboard"
+@implements IDisposable
 @inject IncomeStore IncomeStore
+@inject MonthlyPaymentStore MonthlyPaymentStore
 
 <PageTitle>Dashboard</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true">Dashboard</MudText>
+<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <div>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.Dashboard" Color="Color.Primary" />
+                <MudText Typo="Typo.h4" GutterBottom="false">Dashboard</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Class="dashboard-subtitle">
+                Financial snapshot for @DateTime.Today.ToString("MMMM yyyy")
+            </MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Today" Label="true">
+            @DateTime.Today.ToString("dddd, MMM dd")
+        </MudChip>
+    </MudStack>
 
-<MudPaper Class="pa-4">
-    <MudText Typo="Typo.h6" GutterBottom="true">Total Incomes by Month</MudText>
+    <MudGrid>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Class="pa-4 dashboard-kpi">
+                <MudStack Spacing="1">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Paid" Size="Size.Small" Color="Color.Success" />
+                        <MudText Typo="Typo.caption">Income (Gross)</MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.h5">@_monthGrossIncome.ToString("C2")</MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Class="pa-4 dashboard-kpi">
+                <MudStack Spacing="1">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" Size="Size.Small" Color="Color.Success" />
+                        <MudText Typo="Typo.caption">Income (Net)</MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.h5">@_monthNetIncome.ToString("C2")</MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Class="pa-4 dashboard-kpi">
+                <MudStack Spacing="1">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Receipt" Size="Size.Small" Color="Color.Warning" />
+                        <MudText Typo="Typo.caption">Monthly Payments</MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.h5">@_monthPayments.ToString("C2")</MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Class="pa-4 dashboard-kpi">
+                <MudStack Spacing="1">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Size="Size.Small" Color="Color.Info" />
+                        <MudText Typo="Typo.caption">Projected Cashflow</MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.h5" Class="@(_projectedCashflow >= 0 ? "cash-positive" : "cash-negative")">
+                        @_projectedCashflow.ToString("C2")
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 
-    @if (_monthlyTotals.Count == 0)
-    {
-        <MudText Typo="Typo.body1">No income data available.</MudText>
-    }
-    else
-    {
-        <MudChart ChartType="ChartType.Bar"
-                  ChartSeries="_series"
-                  XAxisLabels="_xAxisLabels"
-                  Width="100%"
-                  Height="350px" />
-    }
-</MudPaper>
+    <MudGrid>
+        <MudItem xs="12" lg="8">
+            <MudPaper Class="pa-4 dashboard-panel">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.QueryStats" Size="Size.Small" />
+                    <MudText Typo="Typo.h6" GutterBottom="false">Income Trend (Last 6 Months)</MudText>
+                </MudStack>
+                @if (_incomeXAxisLabels.Length == 0)
+                {
+                    <MudText Typo="Typo.body2">No income data available.</MudText>
+                }
+                else
+                {
+                    <MudChart ChartType="ChartType.Bar"
+                              ChartSeries="_incomeSeries"
+                              XAxisLabels="_incomeXAxisLabels"
+                              Width="100%"
+                              Height="320px" />
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" lg="4">
+            <MudPaper Class="pa-4 dashboard-panel">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.PieChart" Size="Size.Small" />
+                    <MudText Typo="Typo.h6" GutterBottom="false">Payments by Type</MudText>
+                </MudStack>
+                @if (_paymentByTypeLabels.Length == 0)
+                {
+                    <MudText Typo="Typo.body2">No monthly payment data available.</MudText>
+                }
+                else
+                {
+                    <MudChart ChartType="ChartType.Pie"
+                              InputData="_paymentByTypeData"
+                              InputLabels="_paymentByTypeLabels"
+                              Width="100%"
+                              Height="320px" />
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="12" lg="6">
+            <MudPaper Class="pa-4 dashboard-panel">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.History" Size="Size.Small" />
+                    <MudText Typo="Typo.h6" GutterBottom="false">Recent Incomes</MudText>
+                </MudStack>
+                <MudTable Items="_recentIncomes" Dense="true" Hover="true" Striped="true">
+                    <HeaderContent>
+                        <MudTh>Date</MudTh>
+                        <MudTh>Type</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh Class="align-right">Net</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Date.ToString("yyyy-MM-dd")</MudTd>
+                        <MudTd>@context.Type</MudTd>
+                        <MudTd>
+                            <MudChip T="string"
+                                     Color="Color.Default"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Small"
+                                     Style="@GetIncomeStatusChipStyle(context.Date)"
+                                     Label="true">
+                                @(IsDone(context.Date) ? "Done" : "Open")
+                            </MudChip>
+                        </MudTd>
+                        <MudTd Class="align-right">@((context.Amount - context.TaxAmount).ToString("C2"))</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText Typo="Typo.body2">No income records.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" lg="6">
+            <MudPaper Class="pa-4 dashboard-panel">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.EventAvailable" Size="Size.Small" />
+                    <MudText Typo="Typo.h6" GutterBottom="false">Upcoming Payments (Next 30 Days)</MudText>
+                </MudStack>
+                <MudTable Items="_upcomingPayments" Dense="true" Hover="true" Striped="true">
+                    <HeaderContent>
+                        <MudTh>Date</MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Type</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh Class="align-right">Amount</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Date.ToString("yyyy-MM-dd")</MudTd>
+                        <MudTd>@context.Name</MudTd>
+                        <MudTd>@context.Type</MudTd>
+                        <MudTd>
+                            <MudChip T="string"
+                                     Color="Color.Default"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Small"
+                                     Style="@GetStatusChipStyle(context.Date)"
+                                     Label="true">
+                                @(IsPaid(context.Date) ? "Paid" : "Open")
+                            </MudChip>
+                        </MudTd>
+                        <MudTd Class="align-right">@context.Amount.ToString("C2")</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText Typo="Typo.body2">No upcoming monthly payments.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudStack>
 
 @code {
-    private readonly List<ChartSeries> _series = [];
-    private string[] _xAxisLabels = [];
-    private List<IGrouping<DateTime, IncomeRow>> _monthlyTotals = [];
+    private readonly List<ChartSeries> _incomeSeries = [];
+    private string[] _incomeXAxisLabels = [];
+    private string[] _paymentByTypeLabels = [];
+    private double[] _paymentByTypeData = [];
+    private List<IncomeRow> _recentIncomes = [];
+    private List<MonthlyPaymentRow> _upcomingPayments = [];
+
+    private decimal _monthGrossIncome;
+    private decimal _monthNetIncome;
+    private decimal _monthPayments;
+    private decimal _projectedCashflow;
 
     protected override void OnInitialized()
     {
-        LoadChartData();
+        IncomeStore.Changed += HandleDataChanged;
+        MonthlyPaymentStore.Changed += HandleDataChanged;
+        LoadDashboardData();
     }
 
-    private void LoadChartData()
+    private void LoadDashboardData()
     {
-        _monthlyTotals = IncomeStore.Incomes
+        var incomeByMonth = IncomeStore.Incomes
             .GroupBy(x => new DateTime(x.Date.Year, x.Date.Month, 1))
             .OrderBy(x => x.Key)
+            .TakeLast(6)
             .ToList();
 
-        _xAxisLabels = _monthlyTotals
+        _incomeXAxisLabels = incomeByMonth
             .Select(x => x.Key.ToString("MMM yyyy"))
             .ToArray();
 
-        _series.Clear();
-        _series.Add(new ChartSeries
+        _incomeSeries.Clear();
+        _incomeSeries.Add(new ChartSeries
         {
-            Name = "Income Total",
-            Data = _monthlyTotals
+            Name = "Gross Income",
+            Data = incomeByMonth
                 .Select(x => Convert.ToDouble(x.Sum(i => i.Amount)))
                 .ToArray()
         });
+        _incomeSeries.Add(new ChartSeries
+        {
+            Name = "Net Income",
+            Data = incomeByMonth
+                .Select(x => Convert.ToDouble(x.Sum(i => i.Amount - i.TaxAmount)))
+                .ToArray()
+        });
+
+        var paymentByType = MonthlyPaymentStore.MonthlyPayments
+            .GroupBy(x => x.Type)
+            .OrderByDescending(x => x.Sum(p => p.Amount))
+            .ToList();
+
+        _paymentByTypeLabels = paymentByType
+            .Select(x => x.Key)
+            .ToArray();
+
+        _paymentByTypeData = paymentByType
+            .Select(x => Convert.ToDouble(x.Sum(p => p.Amount)))
+            .ToArray();
+
+        var today = DateTime.Today;
+        var monthStart = new DateTime(today.Year, today.Month, 1);
+        var nextMonthStart = monthStart.AddMonths(1);
+
+        _monthGrossIncome = IncomeStore.Incomes
+            .Where(x => x.Date >= monthStart && x.Date < nextMonthStart)
+            .Sum(x => x.Amount);
+
+        _monthNetIncome = IncomeStore.Incomes
+            .Where(x => x.Date >= monthStart && x.Date < nextMonthStart)
+            .Sum(x => x.Amount - x.TaxAmount);
+
+        _monthPayments = MonthlyPaymentStore.MonthlyPayments
+            .Where(x => x.Date >= monthStart && x.Date < nextMonthStart)
+            .Sum(x => x.Amount);
+
+        _projectedCashflow = _monthNetIncome - _monthPayments;
+
+        _recentIncomes = IncomeStore.Incomes
+            .OrderByDescending(x => x.Date)
+            .Take(5)
+            .ToList();
+
+        _upcomingPayments = MonthlyPaymentStore.MonthlyPayments
+            .Where(x => x.Date >= today && x.Date <= today.AddDays(30))
+            .OrderBy(x => x.Date)
+            .Take(8)
+            .ToList();
+    }
+
+    private void HandleDataChanged()
+    {
+        LoadDashboardData();
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private static bool IsPaid(DateTime paymentDate) => paymentDate.Date <= DateTime.Today;
+
+    private static string GetStatusChipStyle(DateTime paymentDate) =>
+        IsPaid(paymentDate)
+            ? "background-color:var(--sb-status-done-bg);color:var(--sb-status-text);"
+            : "background-color:var(--sb-status-open-bg);color:var(--sb-status-text);";
+
+    private static bool IsDone(DateTime incomeDate) => incomeDate.Date <= DateTime.Today;
+
+    private static string GetIncomeStatusChipStyle(DateTime incomeDate) =>
+        IsDone(incomeDate)
+            ? "background-color:var(--sb-status-done-bg);color:var(--sb-status-text);"
+            : "background-color:var(--sb-status-open-bg);color:var(--sb-status-text);";
+
+    public void Dispose()
+    {
+        IncomeStore.Changed -= HandleDataChanged;
+        MonthlyPaymentStore.Changed -= HandleDataChanged;
     }
 }

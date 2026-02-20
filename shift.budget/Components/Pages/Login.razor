@@ -1,0 +1,39 @@
+@page "/"
+@page "/login"
+@layout AuthLayout
+@inject NavigationManager NavigationManager
+
+<PageTitle>Login</PageTitle>
+
+<div class="login-wrapper">
+    <MudPaper Class="pa-6 login-card" Elevation="6">
+        <MudStack Spacing="3">
+            <div class="login-logo-wrap">
+                <img class="login-logo" src="images/personal-planner-logo.svg" alt="personal.planner logo" />
+            </div>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Primary" />
+                <MudText Typo="Typo.h5" GutterBottom="false">Connexion</MudText>
+            </MudStack>
+
+            <MudTextField T="string" Label="Email" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
+            <MudTextField T="string" Label="Mot de passe" InputType="InputType.Password" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Password" />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       FullWidth="true"
+                       OnClick="GoToDashboard">
+                Connexion
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+</div>
+
+@code {
+    private void GoToDashboard()
+    {
+        NavigationManager.NavigateTo("/dashboard");
+    }
+}

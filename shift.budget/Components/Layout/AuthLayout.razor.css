@@ -1,0 +1,6 @@
+.auth-shell {
+    min-height: 100vh;
+    background-color: var(--mud-palette-background);
+    color: var(--mud-palette-text-primary);
+    padding: 1rem;
+}

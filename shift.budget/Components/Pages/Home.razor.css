@@ -1,0 +1,26 @@
+.dashboard-subtitle {
+    color: var(--mud-palette-text-secondary);
+}
+
+.dashboard-kpi {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.dashboard-panel {
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.align-right {
+    text-align: right;
+}
+
+.cash-positive {
+    color: var(--mud-palette-success);
+}
+
+.cash-negative {
+    color: var(--mud-palette-error);
+}

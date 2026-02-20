@@ -1,0 +1,24 @@
+.login-wrapper[b-qaw2la2tvw] {
+    min-height: calc(100vh - 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card[b-qaw2la2tvw] {
+    width: min(420px, 95vw);
+}
+
+.login-logo-wrap[b-qaw2la2tvw] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0.25rem;
+}
+
+.login-logo[b-qaw2la2tvw] {
+    width: min(180px, 42vw);
+    max-height: 88px;
+    height: auto;
+    object-fit: contain;
+}

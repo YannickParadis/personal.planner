@@ -1,1 +1,485 @@
-[]
+[
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "GetIncomes",
+    "RelativePath": "api/incomes/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[personal.planner.Components.Data.IncomeRow, personal.planner, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Incomes"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "CreateIncome",
+    "RelativePath": "api/incomes/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "personal.planner.Components.Data.IncomeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.IncomeRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Incomes"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "GetIncomeById",
+    "RelativePath": "api/incomes/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.IncomeRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomes"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "UpdateIncome",
+    "RelativePath": "api/incomes/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "personal.planner.Components.Data.IncomeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.IncomeRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Incomes"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "DeleteIncome",
+    "RelativePath": "api/incomes/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomes"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "GetMonthlyPayments",
+    "RelativePath": "api/monthly-payments/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[personal.planner.Components.Data.MonthlyPaymentRow, personal.planner, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Monthly Payments"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "CreateMonthlyPayment",
+    "RelativePath": "api/monthly-payments/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "personal.planner.Components.Data.MonthlyPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.MonthlyPaymentRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Monthly Payments"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "GetMonthlyPaymentById",
+    "RelativePath": "api/monthly-payments/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.MonthlyPaymentRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Monthly Payments"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "UpdateMonthlyPayment",
+    "RelativePath": "api/monthly-payments/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "personal.planner.Components.Data.MonthlyPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.MonthlyPaymentRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Monthly Payments"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "DeleteMonthlyPayment",
+    "RelativePath": "api/monthly-payments/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Monthly Payments"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "GetSavings",
+    "RelativePath": "api/savings/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[personal.planner.Components.Data.SavingsRow, personal.planner, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Savings"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "CreateSavings",
+    "RelativePath": "api/savings/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "personal.planner.Components.Data.SavingsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.SavingsRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Savings"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "GetSavingsById",
+    "RelativePath": "api/savings/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.SavingsRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Savings"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "UpdateSavings",
+    "RelativePath": "api/savings/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "personal.planner.Components.Data.SavingsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "personal.planner.Components.Data.SavingsRow",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Savings"
+    ]
+  },
+  {
+    "ContainingType": "personal.planner.Components.Data.BudgetApiEndpoints",
+    "Method": "DeleteSavings",
+    "RelativePath": "api/savings/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Savings"
+    ]
+  }
+]

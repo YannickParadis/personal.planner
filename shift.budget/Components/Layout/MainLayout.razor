@@ -1,5 +1,7 @@
 @inherits LayoutComponentBase
+@implements IDisposable
 @inject ThemeState ThemeState
+@inject IJSRuntime JS
 
 <MudThemeProvider Theme="_theme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
 <MudPopoverProvider />
@@ -11,10 +13,21 @@
 
     <main>
         <div class="top-row px-4">
-            <MudSwitch T="bool"
-                       @bind-Value="ThemeState.IsDarkMode"
-                       Color="Color.Primary"
-                       Label="@(ThemeState.IsDarkMode ? "Dark" : "Light")" />
+            <span class="top-brand-wordmark">personal.planner</span>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="top-row-actions">
+                <MudTooltip Text="@(ThemeState.IsDarkMode ? "Dark mode" : "Light mode")">
+                    <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)"
+                                   Color="Color.Primary"
+                                   Variant="Variant.Outlined"
+                                   Size="Size.Medium"
+                                   OnClick="ToggleTheme" />
+                </MudTooltip>
+                <MudBadge Dot="true" Color="Color.Success" Overlap="true">
+                    <MudAvatar Variant="Variant.Outlined" Color="Color.Info" Size="Size.Medium">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" />
+                    </MudAvatar>
+                </MudBadge>
+            </MudStack>
         </div>
 
         <article class="content px-4">
@@ -30,5 +43,42 @@
 </div>
 
 @code {
-    private readonly MudTheme _theme = new();
+    private readonly MudTheme _theme = AppTheme.Theme;
+    private const string ThemePreferenceKey = "personal.planner.theme.darkmode";
+
+    protected override void OnInitialized()
+    {
+        ThemeState.Changed += HandleThemeChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var savedValue = await JS.InvokeAsync<string?>("localStorage.getItem", ThemePreferenceKey);
+
+        if (bool.TryParse(savedValue, out var savedMode))
+        {
+            ThemeState.IsDarkMode = savedMode;
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        ThemeState.IsDarkMode = !ThemeState.IsDarkMode;
+        await JS.InvokeVoidAsync("localStorage.setItem", ThemePreferenceKey, ThemeState.IsDarkMode.ToString());
+    }
+
+    private void HandleThemeChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeState.Changed -= HandleThemeChanged;
+    }
 }

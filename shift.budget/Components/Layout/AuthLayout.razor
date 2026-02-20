@@ -1,0 +1,46 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject ThemeState ThemeState
+@inject IJSRuntime JS
+
+<MudThemeProvider Theme="_theme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
+<MudPopoverProvider />
+
+<main class="auth-shell">
+    @Body
+</main>
+
+@code {
+    private readonly MudTheme _theme = AppTheme.Theme;
+    private const string ThemePreferenceKey = "personal.planner.theme.darkmode";
+
+    protected override void OnInitialized()
+    {
+        ThemeState.Changed += HandleThemeChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var savedValue = await JS.InvokeAsync<string?>("localStorage.getItem", ThemePreferenceKey);
+
+        if (bool.TryParse(savedValue, out var savedMode))
+        {
+            ThemeState.IsDarkMode = savedMode;
+        }
+    }
+
+    private void HandleThemeChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeState.Changed -= HandleThemeChanged;
+    }
+}

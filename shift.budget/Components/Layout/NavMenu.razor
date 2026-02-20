@@ -1,24 +1,41 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">shift.budget</a>
+        <a class="navbar-brand d-flex align-items-center" href="">
+            <img class="brand-logo" src="images/personal-planner-logo.svg" alt="personal.planner logo" />
+        </a>
     </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" @bind="_isNavOpen" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="nav-scrollable" @onclick="CloseNavOnSelection">
     <MudNavMenu Class="px-2 pt-2">
-        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
+        <MudNavLink Href="/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
             Dashboard
         </MudNavLink>
-        <MudNavLink Href="/incomes" Icon="@Icons.Material.Filled.AttachMoney">
-            Incomes
-        </MudNavLink>
-        <MudNavLink Href="/montlhly-payments" Icon="@Icons.Material.Filled.CalendarMonth">
-            Montlhly Payments
-        </MudNavLink>
-        <MudNavLink Href="/savings" Icon="@Icons.Material.Filled.Savings">
-            Savings
-        </MudNavLink>
+
+        <MudNavGroup Title="Finances" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="true">
+            <MudNavLink Href="/incomes" Icon="@Icons.Material.Filled.AttachMoney">
+                Incomes
+            </MudNavLink>
+            <MudNavLink Href="/monthly-payments" Icon="@Icons.Material.Filled.CalendarMonth">
+                Monthly Payments
+            </MudNavLink>
+            <MudNavLink Href="/savings" Icon="@Icons.Material.Filled.Savings">
+                Savings
+            </MudNavLink>
+        </MudNavGroup>
     </MudNavMenu>
 </div>
+
+@code {
+    private bool _isNavOpen;
+
+    private void CloseNavOnSelection()
+    {
+        if (_isNavOpen)
+        {
+            _isNavOpen = false;
+        }
+    }
+}

@@ -1,0 +1,195 @@
+@page "/savings"
+@inject SavingsStore SavingsStore
+
+<PageTitle>Savings List</PageTitle>
+
+<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <div>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.Savings" Color="Color.Primary" />
+                <MudText Typo="Typo.h4" GutterBottom="false">Savings List</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Track your savings balances by account.</MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Inventory2" Label="true">
+            @($"{SavingsStore.Savings.Count} records")
+        </MudChip>
+    </MudStack>
+
+    <MudPaper Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">Savings Records</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    Total Savings: @SavingsStore.Savings.Sum(x => x.Amount).ToString("C2")
+                </MudText>
+            </MudStack>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartAdd" StartIcon="@Icons.Material.Filled.Add">
+                Add Savings
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudDataGrid T="SavingsRow"
+                     Items="SavingsStore.Savings"
+                     RowClick="OnGridRowClick"
+                     Filterable="true"
+                     SortMode="SortMode.Multiple"
+                     RowsPerPage="20"
+                     Dense="true"
+                     Hover="true"
+                     Striped="true">
+            <Columns>
+                <PropertyColumn Property="x => x.Description" Title="Description" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Amount" Title="Amount ($)" Sortable="true" Filterable="true" Format="C2" />
+                <PropertyColumn Property="x => x.AccountName" Title="Account Name" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Date" Title="Date" Sortable="true" Filterable="true" Format="yyyy-MM-dd" />
+                <TemplateColumn Title="Actions" Sortable="false" Filterable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartEdit(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteSavings(context.Item.Id))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="SavingsRow" PageSizeOptions="new int[] { 20 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudStack>
+
+@if (_isFormPopupOpen)
+{
+    <div style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.45); z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <MudPaper Class="pa-4" Elevation="8" Style="width: min(640px, 100%);">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@(_editingSavingsId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit)" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_editingSavingsId is null ? "Add Savings" : "Edit Savings")</MudText>
+                </MudStack>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
+            </MudStack>
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Description"
+                                  @bind-Value="_formDescription"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="decimal"
+                                     Label="Amount $"
+                                     @bind-Value="_formAmount"
+                                     Min="0"
+                                     Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Account Name"
+                                  @bind-Value="_formAccountName"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Date"
+                                   @bind-Date="_formDate"
+                                   Editable="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetForm" StartIcon="@Icons.Material.Filled.Close">
+                            Cancel
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveSavings" StartIcon="@Icons.Material.Filled.Save">
+                            Save
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </div>
+}
+
+@code {
+    private int? _editingSavingsId;
+    private bool _isFormPopupOpen;
+    private string _formDescription = string.Empty;
+    private decimal _formAmount;
+    private string _formAccountName = string.Empty;
+    private DateTime? _formDate = DateTime.Today;
+
+    private void StartAdd()
+    {
+        _editingSavingsId = null;
+        _formDescription = string.Empty;
+        _formAmount = 0;
+        _formAccountName = string.Empty;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartEdit(SavingsRow savings)
+    {
+        _editingSavingsId = savings.Id;
+        _formDescription = savings.Description;
+        _formAmount = savings.Amount;
+        _formAccountName = savings.AccountName;
+        _formDate = savings.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void OnGridRowClick(DataGridRowClickEventArgs<SavingsRow> args)
+    {
+        if (args.MouseEventArgs.Detail == 2)
+        {
+            StartEdit(args.Item);
+        }
+    }
+
+    private void SaveSavings()
+    {
+        if (string.IsNullOrWhiteSpace(_formDescription) ||
+            string.IsNullOrWhiteSpace(_formAccountName) ||
+            _formDate is null)
+        {
+            return;
+        }
+
+        if (_editingSavingsId is null)
+        {
+            SavingsStore.Add(_formDescription, _formAmount, _formAccountName, _formDate.Value);
+        }
+        else
+        {
+            SavingsStore.Update(_editingSavingsId.Value, _formDescription, _formAmount, _formAccountName, _formDate.Value);
+        }
+
+        ResetForm();
+    }
+
+    private void DeleteSavings(int savingsId)
+    {
+        SavingsStore.Delete(savingsId);
+
+        if (_editingSavingsId == savingsId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        _editingSavingsId = null;
+        _formDescription = string.Empty;
+        _formAmount = 0;
+        _formAccountName = string.Empty;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = false;
+    }
+}

@@ -1,21 +1,60 @@
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+:root {
+    color-scheme: light;
+    --sb-status-done-bg: #1f5f3a;
+    --sb-status-open-bg: #1f3a5f;
+    --sb-status-text: #ffffff;
+    --sb-focus-ring: rgba(29, 78, 216, 0.35);
+}
+
+.mud-theme-dark {
+    color-scheme: dark;
+    --sb-status-done-bg: #14532d;
+    --sb-status-open-bg: #1e3a8a;
+    --sb-status-text: #e2e8f0;
+    --sb-focus-ring: rgba(96, 165, 250, 0.45);
+}
+
+html,
+body {
+    margin: 0;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.45;
     background-color: var(--mud-palette-background);
     color: var(--mud-palette-text-primary);
 }
 
-a, .btn-link {
+a,
+.btn-link {
     color: var(--mud-palette-primary);
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: #ffffff;
+    background-color: var(--mud-palette-primary);
+    border-color: var(--mud-palette-primary);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem var(--sb-focus-ring);
+}
+
+.mud-paper {
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.mud-table-head .mud-typography,
+.mud-table-head .mud-th {
+    color: var(--mud-palette-text-primary);
+    font-weight: 600;
+}
+
+.mud-table-row .mud-typography,
+.mud-data-grid .mud-table-cell {
+    color: var(--mud-palette-text-primary);
 }
 
 .content {

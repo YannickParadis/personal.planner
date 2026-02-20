@@ -1,0 +1,24 @@
+.login-wrapper {
+    min-height: calc(100vh - 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: min(420px, 95vw);
+}
+
+.login-logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0.25rem;
+}
+
+.login-logo {
+    width: min(180px, 42vw);
+    max-height: 88px;
+    height: auto;
+    object-fit: contain;
+}

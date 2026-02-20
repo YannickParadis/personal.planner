@@ -1,0 +1,26 @@
+.dashboard-subtitle[b-1wy16aqtp6] {
+    color: var(--mud-palette-text-secondary);
+}
+
+.dashboard-kpi[b-1wy16aqtp6] {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.dashboard-panel[b-1wy16aqtp6] {
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.align-right[b-1wy16aqtp6] {
+    text-align: right;
+}
+
+.cash-positive[b-1wy16aqtp6] {
+    color: var(--mud-palette-success);
+}
+
+.cash-negative[b-1wy16aqtp6] {
+    color: var(--mud-palette-error);
+}

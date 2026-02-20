@@ -24,6 +24,17 @@
 .navbar-brand {
     font-size: 1.1rem;
     color: var(--mud-palette-text-primary);
+    padding: 0.2rem 0;
+    width: 100%;
+    max-width: none;
+}
+
+.brand-logo {
+    width: 100%;
+    max-height: none;
+    height: auto;
+    display: block;
+    object-fit: contain;
 }
 
 .nav-scrollable ::deep .mud-navmenu {
@@ -31,39 +42,35 @@
 }
 
 .nav-scrollable ::deep .mud-nav-link {
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 0.25rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
     color: var(--mud-palette-text-primary);
 }
 
 .nav-scrollable ::deep .mud-nav-link.active {
-    background-color: var(--mud-palette-action-default-hover);
+    background-color: rgba(var(--mud-palette-primary-rgb), 0.18);
+    border: 1px solid rgba(var(--mud-palette-primary-rgb), 0.35);
     color: var(--mud-palette-text-primary);
+    font-weight: 600;
 }
 
 .nav-scrollable ::deep .mud-nav-link:hover {
-    background-color: var(--mud-palette-action-default-hover);
+    background-color: rgba(var(--mud-palette-primary-rgb), 0.12);
+}
+
+.nav-scrollable ::deep .mud-nav-group-text {
+    color: var(--mud-palette-text-secondary);
+    letter-spacing: 0.01em;
 }
 
 .nav-scrollable {
-    display: none;
-}
-
-.navbar-toggler:checked ~ .nav-scrollable {
     display: block;
+    height: calc(100vh - 3.5rem);
+    overflow-y: auto;
 }
 
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
-    }
-
-    .nav-scrollable {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-
-        /* Allow sidebar to scroll for tall menus */
-        height: calc(100vh - 3.5rem);
-        overflow-y: auto;
-    }
+.navbar-toggler {
+    display: none;
 }

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">personal.planner logo</title>
+  <desc id="logoDesc">Abstract monogram with two flow arrows and a core coin shape.</desc>
+
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7CC5FF" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7FE7C9" />
+      <stop offset="100%" stop-color="#22C55E" />
+    </linearGradient>
+  </defs>
+
+  <rect x="6" y="6" width="84" height="84" rx="22" fill="#0F172A" />
+  <rect x="10" y="10" width="76" height="76" rx="18" fill="#111827" stroke="#334155" stroke-width="2" />
+
+  <path d="M24 52c0-13 10-23 23-23h20v9H47c-8 0-14 6-14 14s6 14 14 14h7v9h-7c-13 0-23-10-23-23z" fill="url(#bgGrad)" />
+  <path d="M72 44c0 13-10 23-23 23H29v-9h20c8 0 14-6 14-14s-6-14-14-14h-7v-9h7c13 0 23 10 23 23z" fill="url(#accentGrad)" />
+
+  <circle cx="48" cy="48" r="8" fill="#E2E8F0" />
+  <path d="M48 42v12M44 45h8M44 51h8" stroke="#0F172A" stroke-width="2" stroke-linecap="round" />
+</svg>
