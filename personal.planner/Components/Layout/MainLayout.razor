@@ -3,7 +3,7 @@
 @inject ThemeState ThemeState
 @inject IJSRuntime JS
 
-<MudThemeProvider Theme="_theme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
+<MudThemeProvider Theme="@CurrentTheme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
 <MudPopoverProvider />
 
 <div class="page">
@@ -15,13 +15,6 @@
         <div class="top-row px-4">
             <span class="top-brand-wordmark">personal.planner</span>
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="top-row-actions">
-                <MudTooltip Text="@(ThemeState.IsDarkMode ? "Dark mode" : "Light mode")">
-                    <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)"
-                                   Color="Color.Primary"
-                                   Variant="Variant.Outlined"
-                                   Size="Size.Medium"
-                                   OnClick="ToggleTheme" />
-                </MudTooltip>
                 <MudBadge Dot="true" Color="Color.Success" Overlap="true">
                     <MudAvatar Variant="Variant.Outlined" Color="Color.Info" Size="Size.Medium">
                         <MudIcon Icon="@Icons.Material.Filled.Person" />
@@ -43,8 +36,9 @@
 </div>
 
 @code {
-    private readonly MudTheme _theme = AppTheme.Theme;
-    private const string ThemePreferenceKey = "personal.planner.theme.darkmode";
+    private const string ThemePreferenceKey = "personal.planner.theme.mode";
+    private const string LegacyThemePreferenceKey = "personal.planner.theme.darkmode";
+    private MudTheme CurrentTheme => ThemeState.Mode == ThemeMode.DarkSlate ? AppTheme.SlateTheme : AppTheme.BlueTheme;
 
     protected override void OnInitialized()
     {
@@ -59,17 +53,19 @@
         }
 
         var savedValue = await JS.InvokeAsync<string?>("localStorage.getItem", ThemePreferenceKey);
-
-        if (bool.TryParse(savedValue, out var savedMode))
+        if (int.TryParse(savedValue, out var savedMode) &&
+            Enum.IsDefined(typeof(ThemeMode), savedMode))
         {
-            ThemeState.IsDarkMode = savedMode;
+            ThemeState.Mode = (ThemeMode)savedMode;
+            return;
         }
-    }
 
-    private async Task ToggleTheme()
-    {
-        ThemeState.IsDarkMode = !ThemeState.IsDarkMode;
-        await JS.InvokeVoidAsync("localStorage.setItem", ThemePreferenceKey, ThemeState.IsDarkMode.ToString());
+        var legacyValue = await JS.InvokeAsync<string?>("localStorage.getItem", LegacyThemePreferenceKey);
+        if (bool.TryParse(legacyValue, out var legacyDarkMode))
+        {
+            ThemeState.Mode = legacyDarkMode ? ThemeMode.DarkBlue : ThemeMode.Light;
+            await JS.InvokeVoidAsync("localStorage.setItem", ThemePreferenceKey, ((int)ThemeState.Mode).ToString());
+        }
     }
 
     private void HandleThemeChanged()

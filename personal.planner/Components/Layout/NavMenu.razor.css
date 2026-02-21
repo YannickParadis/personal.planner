@@ -66,9 +66,21 @@
 }
 
 .nav-scrollable {
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: calc(100vh - 3.5rem);
     overflow-y: auto;
+}
+
+.nav-menu-main {
+    flex: 1 1 auto;
+}
+
+.nav-theme-panel {
+    margin: 0.75rem;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 12px;
+    background-color: var(--mud-palette-surface);
 }
 
 .navbar-toggler {

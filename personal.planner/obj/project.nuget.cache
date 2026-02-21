@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Y44Jp5ULRjU=",
+  "dgSpecHash": "DSbKUbx6moc=",
   "success": true,
-  "projectFilePath": "C:\\repos\\shift.budget\\shift.budget\\personal.planner.csproj",
+  "projectFilePath": "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\yanni\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\yanni\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.3\\microsoft.aspnetcore.app.internal.assets.10.0.3.nupkg.sha512",

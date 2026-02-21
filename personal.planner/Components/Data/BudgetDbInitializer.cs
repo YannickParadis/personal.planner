@@ -7,6 +7,15 @@ public static class BudgetDbInitializer
     public static void Initialize(BudgetDbContext db)
     {
         db.Database.EnsureCreated();
+        EnsureRemindersSchema(db);
+        db.Database.ExecuteSqlRaw("""
+            CREATE TABLE IF NOT EXISTS Reminders (
+                Id INTEGER NOT NULL CONSTRAINT PK_Reminders PRIMARY KEY AUTOINCREMENT,
+                Title TEXT NOT NULL DEFAULT '',
+                Description TEXT NOT NULL,
+                Date TEXT NOT NULL DEFAULT '2026-02-20'
+            );
+            """);
 
         if (!db.Incomes.Any())
         {
@@ -41,6 +50,44 @@ public static class BudgetDbInitializer
             );
         }
 
+        if (!db.Reminders.Any())
+        {
+            db.Reminders.AddRange(
+                new ReminderRow { Title = "Pay Bills", Description = "Pay utility bills before the due date.", Date = new DateTime(2026, 2, 21) },
+                new ReminderRow { Title = "Review Subscriptions", Description = "Review monthly subscriptions this weekend.", Date = new DateTime(2026, 2, 22) }
+            );
+        }
+
         db.SaveChanges();
+    }
+
+    private static void EnsureRemindersSchema(BudgetDbContext db)
+    {
+        var connection = db.Database.GetDbConnection();
+        if (connection.State != System.Data.ConnectionState.Open)
+        {
+            connection.Open();
+        }
+
+        using var checkCommand = connection.CreateCommand();
+        checkCommand.CommandText = "PRAGMA table_info('Reminders');";
+        using var reader = checkCommand.ExecuteReader();
+
+        var columns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        while (reader.Read())
+        {
+            columns.Add(reader.GetString(1));
+        }
+        reader.Close();
+
+        if (!columns.Contains("Title"))
+        {
+            db.Database.ExecuteSqlRaw("ALTER TABLE Reminders ADD COLUMN Title TEXT NOT NULL DEFAULT '';");
+        }
+
+        if (!columns.Contains("Date"))
+        {
+            db.Database.ExecuteSqlRaw("ALTER TABLE Reminders ADD COLUMN Date TEXT NOT NULL DEFAULT '2026-02-20';");
+        }
     }
 }

@@ -98,28 +98,33 @@
             <MudGrid>
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Name"
+                                  Variant="Variant.Outlined"
                                   @bind-Value="_formName"
                                   Immediate="true" />
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Type"
+                                  Variant="Variant.Outlined"
                                   @bind-Value="_formType"
                                   Immediate="true" />
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Type of Payment"
+                                  Variant="Variant.Outlined"
                                   @bind-Value="_formPaymentType"
                                   Immediate="true" />
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudNumericField T="decimal"
                                      Label="Amount $"
+                                     Variant="Variant.Outlined"
                                      @bind-Value="_formAmount"
                                      Min="0"
                                      Immediate="true" />
                 </MudItem>
                 <MudItem xs="12" md="6">
                     <MudDatePicker Label="Date"
+                                   Variant="Variant.Outlined"
                                    @bind-Date="_formDate"
                                    Editable="true" />
                 </MudItem>

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\repos\\shift.budget\\shift.budget\\personal.planner.csproj": {}
+    "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj": {}
   },
   "projects": {
-    "C:\\repos\\shift.budget\\shift.budget\\personal.planner.csproj": {
+    "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\repos\\shift.budget\\shift.budget\\personal.planner.csproj",
+        "projectUniqueName": "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj",
         "projectName": "personal.planner",
-        "projectPath": "C:\\repos\\shift.budget\\shift.budget\\personal.planner.csproj",
+        "projectPath": "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj",
         "packagesPath": "C:\\Users\\yanni\\.nuget\\packages\\",
-        "outputPath": "C:\\repos\\shift.budget\\shift.budget\\obj\\",
+        "outputPath": "C:\\repos\\personal.planner\\personal.planner\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

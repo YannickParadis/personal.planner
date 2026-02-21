@@ -1,0 +1,42 @@
+.reminders-toolbar[b-q9rt85lbc4] {
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 14px;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(61, 131, 246, 0.12), transparent 48%),
+        linear-gradient(180deg, rgba(250, 251, 255, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.reminders-empty[b-q9rt85lbc4] {
+    border: 1px dashed var(--mud-palette-lines-default);
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.reminder-card[b-q9rt85lbc4] {
+    height: 100%;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 16px;
+    background:
+        linear-gradient(90deg, rgba(61, 131, 246, 0.08) 0, rgba(61, 131, 246, 0.08) 5px, transparent 5px),
+        linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(250, 252, 255, 1) 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reminder-card:hover[b-q9rt85lbc4] {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.1);
+}
+
+.reminder-card-title[b-q9rt85lbc4] {
+    font-weight: 700;
+}
+
+.reminder-card-description[b-q9rt85lbc4] {
+    color: var(--mud-palette-text-secondary);
+    min-height: 56px;
+}
+
+.reminder-date-chip[b-q9rt85lbc4] {
+    font-weight: 600;
+    background-color: rgba(61, 131, 246, 0.08);
+}

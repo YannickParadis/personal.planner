@@ -22,6 +22,7 @@ builder.Services.AddScoped<ThemeState>();
 builder.Services.AddScoped<IncomeStore>();
 builder.Services.AddScoped<MonthlyPaymentStore>();
 builder.Services.AddScoped<SavingsStore>();
+builder.Services.AddScoped<ReminderStore>();
 
 var app = builder.Build();
 

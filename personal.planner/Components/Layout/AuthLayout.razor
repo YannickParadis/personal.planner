@@ -3,7 +3,7 @@
 @inject ThemeState ThemeState
 @inject IJSRuntime JS
 
-<MudThemeProvider Theme="_theme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
+<MudThemeProvider Theme="@CurrentTheme" IsDarkMode="ThemeState.IsDarkMode" ObserveSystemThemeChange="false" />
 <MudPopoverProvider />
 
 <main class="auth-shell">
@@ -11,8 +11,9 @@
 </main>
 
 @code {
-    private readonly MudTheme _theme = AppTheme.Theme;
-    private const string ThemePreferenceKey = "personal.planner.theme.darkmode";
+    private const string ThemePreferenceKey = "personal.planner.theme.mode";
+    private const string LegacyThemePreferenceKey = "personal.planner.theme.darkmode";
+    private MudTheme CurrentTheme => ThemeState.Mode == ThemeMode.DarkSlate ? AppTheme.SlateTheme : AppTheme.BlueTheme;
 
     protected override void OnInitialized()
     {
@@ -27,10 +28,18 @@
         }
 
         var savedValue = await JS.InvokeAsync<string?>("localStorage.getItem", ThemePreferenceKey);
-
-        if (bool.TryParse(savedValue, out var savedMode))
+        if (int.TryParse(savedValue, out var savedMode) &&
+            Enum.IsDefined(typeof(ThemeMode), savedMode))
         {
-            ThemeState.IsDarkMode = savedMode;
+            ThemeState.Mode = (ThemeMode)savedMode;
+            return;
+        }
+
+        var legacyValue = await JS.InvokeAsync<string?>("localStorage.getItem", LegacyThemePreferenceKey);
+        if (bool.TryParse(legacyValue, out var legacyDarkMode))
+        {
+            ThemeState.Mode = legacyDarkMode ? ThemeMode.DarkBlue : ThemeMode.Light;
+            await JS.InvokeVoidAsync("localStorage.setItem", ThemePreferenceKey, ((int)ThemeState.Mode).ToString());
         }
     }
 

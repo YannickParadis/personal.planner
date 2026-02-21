@@ -7,6 +7,7 @@ public sealed class BudgetDbContext(DbContextOptions<BudgetDbContext> options) :
     public DbSet<IncomeRow> Incomes => Set<IncomeRow>();
     public DbSet<SavingsRow> Savings => Set<SavingsRow>();
     public DbSet<MonthlyPaymentRow> MonthlyPayments => Set<MonthlyPaymentRow>();
+    public DbSet<ReminderRow> Reminders => Set<ReminderRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,6 +34,14 @@ public sealed class BudgetDbContext(DbContextOptions<BudgetDbContext> options) :
             entity.Property(x => x.Type).HasMaxLength(100);
             entity.Property(x => x.PaymentType).HasMaxLength(100);
             entity.Property(x => x.Amount).HasColumnType("decimal(18,2)");
+        });
+
+        modelBuilder.Entity<ReminderRow>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Title).HasMaxLength(120);
+            entity.Property(x => x.Description).HasMaxLength(300);
+            entity.Property(x => x.Date);
         });
     }
 }

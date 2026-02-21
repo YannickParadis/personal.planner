@@ -2,6 +2,7 @@
 @implements IDisposable
 @inject IncomeStore IncomeStore
 @inject MonthlyPaymentStore MonthlyPaymentStore
+@inject ReminderStore ReminderStore
 
 <PageTitle>Dashboard</PageTitle>
 
@@ -114,7 +115,7 @@
     </MudGrid>
 
     <MudGrid>
-        <MudItem xs="12" lg="6">
+        <MudItem xs="12" lg="4">
             <MudPaper Class="pa-4 dashboard-panel">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
                     <MudIcon Icon="@Icons.Material.Filled.History" Size="Size.Small" />
@@ -148,7 +149,7 @@
                 </MudTable>
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" lg="6">
+        <MudItem xs="12" lg="4">
             <MudPaper Class="pa-4 dashboard-panel">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
                     <MudIcon Icon="@Icons.Material.Filled.EventAvailable" Size="Size.Small" />
@@ -184,6 +185,46 @@
                 </MudTable>
             </MudPaper>
         </MudItem>
+        <MudItem xs="12" lg="4">
+            <MudPaper Class="pa-4 dashboard-panel">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.NotificationsActive" Size="Size.Small" />
+                    <MudText Typo="Typo.h6" GutterBottom="false">Upcoming Reminders (Next 30 Days)</MudText>
+                </MudStack>
+                <MudStack Row="true" Spacing="1" Class="mb-3">
+                    <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small" Label="true">
+                        @_dueSoonReminderCount due in 7 days
+                    </MudChip>
+                    <MudChip T="string" Color="Color.Error" Variant="Variant.Outlined" Size="Size.Small" Label="true">
+                        @_overdueReminderCount overdue
+                    </MudChip>
+                </MudStack>
+                <MudTable Items="_upcomingReminders" Dense="true" Hover="true" Striped="true">
+                    <HeaderContent>
+                        <MudTh>Date</MudTh>
+                        <MudTh>Title</MudTh>
+                        <MudTh>Status</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Date.ToString("yyyy-MM-dd")</MudTd>
+                        <MudTd>@context.Title</MudTd>
+                        <MudTd>
+                            <MudChip T="string"
+                                     Color="Color.Default"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Small"
+                                     Style="@GetReminderStatusChipStyle(context.Date)"
+                                     Label="true">
+                                @GetReminderStatus(context.Date)
+                            </MudChip>
+                        </MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText Typo="Typo.body2">No upcoming reminders.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
     </MudGrid>
 </MudStack>
 
@@ -194,16 +235,20 @@
     private double[] _paymentByTypeData = [];
     private List<IncomeRow> _recentIncomes = [];
     private List<MonthlyPaymentRow> _upcomingPayments = [];
+    private List<ReminderRow> _upcomingReminders = [];
 
     private decimal _monthGrossIncome;
     private decimal _monthNetIncome;
     private decimal _monthPayments;
     private decimal _projectedCashflow;
+    private int _dueSoonReminderCount;
+    private int _overdueReminderCount;
 
     protected override void OnInitialized()
     {
         IncomeStore.Changed += HandleDataChanged;
         MonthlyPaymentStore.Changed += HandleDataChanged;
+        ReminderStore.Changed += HandleDataChanged;
         LoadDashboardData();
     }
 
@@ -276,6 +321,18 @@
             .OrderBy(x => x.Date)
             .Take(8)
             .ToList();
+
+        _upcomingReminders = ReminderStore.Reminders
+            .Where(x => x.Date <= today.AddDays(30))
+            .OrderBy(x => x.Date)
+            .Take(8)
+            .ToList();
+
+        _dueSoonReminderCount = ReminderStore.Reminders
+            .Count(x => x.Date >= today && x.Date <= today.AddDays(7));
+
+        _overdueReminderCount = ReminderStore.Reminders
+            .Count(x => x.Date < today);
     }
 
     private void HandleDataChanged()
@@ -298,9 +355,44 @@
             ? "background-color:var(--sb-status-done-bg);color:var(--sb-status-text);"
             : "background-color:var(--sb-status-open-bg);color:var(--sb-status-text);";
 
+    private static string GetReminderStatus(DateTime reminderDate)
+    {
+        var today = DateTime.Today;
+
+        if (reminderDate.Date < today)
+        {
+            return "Overdue";
+        }
+
+        if (reminderDate.Date <= today.AddDays(7))
+        {
+            return "Due Soon";
+        }
+
+        return "Planned";
+    }
+
+    private static string GetReminderStatusChipStyle(DateTime reminderDate)
+    {
+        var today = DateTime.Today;
+
+        if (reminderDate.Date < today)
+        {
+            return "background-color:var(--mud-palette-error);color:#ffffff;";
+        }
+
+        if (reminderDate.Date <= today.AddDays(7))
+        {
+            return "background-color:var(--mud-palette-warning);color:#111827;";
+        }
+
+        return "background-color:var(--mud-palette-info);color:#ffffff;";
+    }
+
     public void Dispose()
     {
         IncomeStore.Changed -= HandleDataChanged;
         MonthlyPaymentStore.Changed -= HandleDataChanged;
+        ReminderStore.Changed -= HandleDataChanged;
     }
 }

@@ -1,0 +1,186 @@
+@page "/reminders"
+@inject ReminderStore ReminderStore
+
+<PageTitle>Reminders</PageTitle>
+
+<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <div>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.NotificationsActive" Color="Color.Primary" />
+                <MudText Typo="Typo.h4" GutterBottom="false">Reminders</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Create and manage your reminder cards.</MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Notifications" Label="true">
+            @($"{ReminderStore.Reminders.Count} records")
+        </MudChip>
+    </MudStack>
+
+    <MudPaper Class="pa-4 reminders-toolbar" Elevation="0">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">Reminder Cards</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    Add reminders and keep key tasks visible.
+                </MudText>
+            </MudStack>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartAdd" StartIcon="@Icons.Material.Filled.Add">
+                Add Reminder
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    @if (ReminderStore.Reminders.Count == 0)
+    {
+        <MudPaper Class="pa-4 reminders-empty" Elevation="0">
+            <MudText Typo="Typo.body2">No reminders yet.</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudGrid>
+            @foreach (var reminder in ReminderStore.Reminders)
+            {
+                <MudItem xs="12" sm="6" lg="4">
+                    <MudPaper Class="pa-4 reminder-card" Elevation="0">
+                        <MudStack Spacing="2">
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.h6" Class="reminder-card-title">@reminder.Title</MudText>
+                                <MudChip T="string"
+                                         Size="Size.Small"
+                                         Variant="Variant.Outlined"
+                                         Icon="@Icons.Material.Filled.Event"
+                                         Class="reminder-date-chip"
+                                         Label="true">
+                                    @reminder.Date.ToString("MMM dd, yyyy")
+                                </MudChip>
+                            </MudStack>
+                            <MudText Typo="Typo.body1" Class="reminder-card-description">@reminder.Description</MudText>
+                            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="1">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                               Color="Color.Primary"
+                                               Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               OnClick="@(() => StartEdit(reminder))" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                               Color="Color.Error"
+                                               Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               OnClick="@(() => DeleteReminder(reminder.Id))" />
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+</MudStack>
+
+@if (_isFormPopupOpen)
+{
+    <div style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.45); z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <MudPaper Class="pa-4" Elevation="8" Style="width: min(560px, 100%);">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@(_editingReminderId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit)" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_editingReminderId is null ? "Add Reminder" : "Edit Reminder")</MudText>
+                </MudStack>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
+            </MudStack>
+
+            <MudStack Spacing="2">
+                <MudTextField Label="Title"
+                              Variant="Variant.Outlined"
+                              @bind-Value="_formTitle"
+                              Immediate="true" />
+
+                <MudDatePicker Label="Date"
+                               Variant="Variant.Outlined"
+                               @bind-Date="_formDate"
+                               Editable="true" />
+
+                <MudTextField Label="Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="_formDescription"
+                              Immediate="true"
+                              Lines="3" />
+
+                <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetForm" StartIcon="@Icons.Material.Filled.Close">
+                        Cancel
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveReminder" StartIcon="@Icons.Material.Filled.Save">
+                        Save
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </div>
+}
+
+@code {
+    private int? _editingReminderId;
+    private bool _isFormPopupOpen;
+    private string _formTitle = string.Empty;
+    private string _formDescription = string.Empty;
+    private DateTime? _formDate = DateTime.Today;
+
+    private void StartAdd()
+    {
+        _editingReminderId = null;
+        _formTitle = string.Empty;
+        _formDescription = string.Empty;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartEdit(ReminderRow reminder)
+    {
+        _editingReminderId = reminder.Id;
+        _formTitle = reminder.Title;
+        _formDescription = reminder.Description;
+        _formDate = reminder.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void SaveReminder()
+    {
+        if (string.IsNullOrWhiteSpace(_formTitle) ||
+            string.IsNullOrWhiteSpace(_formDescription) ||
+            _formDate is null)
+        {
+            return;
+        }
+
+        if (_editingReminderId is null)
+        {
+            ReminderStore.Add(_formTitle, _formDescription, _formDate.Value);
+        }
+        else
+        {
+            ReminderStore.Update(_editingReminderId.Value, _formTitle, _formDescription, _formDate.Value);
+        }
+
+        ResetForm();
+    }
+
+    private void DeleteReminder(int reminderId)
+    {
+        ReminderStore.Delete(reminderId);
+
+        if (_editingReminderId == reminderId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        _editingReminderId = null;
+        _formTitle = string.Empty;
+        _formDescription = string.Empty;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = false;
+    }
+}

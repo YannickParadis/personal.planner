@@ -1,3 +1,6 @@
+@inject ThemeState ThemeState
+@inject IJSRuntime JS
+
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="">
@@ -9,7 +12,7 @@
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" @bind="_isNavOpen" />
 
 <div class="nav-scrollable" @onclick="CloseNavOnSelection">
-    <MudNavMenu Class="px-2 pt-2">
+    <MudNavMenu Class="px-2 pt-2 nav-menu-main">
         <MudNavLink Href="/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
             Dashboard
         </MudNavLink>
@@ -25,10 +28,33 @@
                 Savings
             </MudNavLink>
         </MudNavGroup>
+
+        <MudNavGroup Title="Management" Icon="@Icons.Material.Filled.ManageAccounts" Expanded="true">
+            <MudNavLink Href="/reminders" Icon="@Icons.Material.Filled.NotificationsActive">
+                Reminders
+            </MudNavLink>
+        </MudNavGroup>
     </MudNavMenu>
+
+    <MudPaper Class="pa-3 nav-theme-panel" Elevation="0">
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-2">Theme</MudText>
+        <MudSelect T="ThemeMode"
+                   Value="ThemeState.Mode"
+                   ValueChanged="SetTheme"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Dense="true"
+                   FullWidth="true"
+                   Label="Select theme">
+            <MudSelectItem T="ThemeMode" Value="ThemeMode.Light">Light</MudSelectItem>
+            <MudSelectItem T="ThemeMode" Value="ThemeMode.DarkBlue">Blue</MudSelectItem>
+            <MudSelectItem T="ThemeMode" Value="ThemeMode.DarkSlate">Slate</MudSelectItem>
+        </MudSelect>
+    </MudPaper>
 </div>
 
 @code {
+    private const string ThemePreferenceKey = "personal.planner.theme.mode";
     private bool _isNavOpen;
 
     private void CloseNavOnSelection()
@@ -37,5 +63,11 @@
         {
             _isNavOpen = false;
         }
+    }
+
+    private async Task SetTheme(ThemeMode mode)
+    {
+        ThemeState.Mode = mode;
+        await JS.InvokeVoidAsync("localStorage.setItem", ThemePreferenceKey, ((int)mode).ToString());
     }
 }

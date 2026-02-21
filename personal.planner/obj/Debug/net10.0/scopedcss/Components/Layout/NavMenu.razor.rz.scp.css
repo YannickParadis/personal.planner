@@ -66,9 +66,21 @@
 }
 
 .nav-scrollable[b-u1kl6488qh] {
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: calc(100vh - 3.5rem);
     overflow-y: auto;
+}
+
+.nav-menu-main[b-u1kl6488qh] {
+    flex: 1 1 auto;
+}
+
+.nav-theme-panel[b-u1kl6488qh] {
+    margin: 0.75rem;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 12px;
+    background-color: var(--mud-palette-surface);
 }
 
 .navbar-toggler[b-u1kl6488qh] {

@@ -4,7 +4,7 @@ namespace personal.planner.Components.Layout;
 
 public static class AppTheme
 {
-    public static MudTheme Theme { get; } = new()
+    public static MudTheme BlueTheme { get; } = new()
     {
         PaletteLight = new PaletteLight
         {
@@ -47,6 +47,52 @@ public static class AppTheme
             LinesDefault = "#263246",
             TableLines = "#263246",
             TableStriped = "#0D1627"
+        }
+    };
+
+    public static MudTheme SlateTheme { get; } = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#374151",
+            Secondary = "#4B5563",
+            Info = "#4B5563",
+            Success = "#166534",
+            Warning = "#92400E",
+            Error = "#B91C1C",
+            Background = "#F3F4F6",
+            Surface = "#FFFFFF",
+            AppbarBackground = "#FFFFFF",
+            DrawerBackground = "#E5E7EB",
+            DrawerText = "#111827",
+            TextPrimary = "#111827",
+            TextSecondary = "#374151",
+            ActionDefault = "#4B5563",
+            ActionDisabled = "#9CA3AF",
+            LinesDefault = "#D1D5DB",
+            TableLines = "#D1D5DB",
+            TableStriped = "#F9FAFB"
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#9CA3AF",
+            Secondary = "#6B7280",
+            Info = "#9CA3AF",
+            Success = "#86EFAC",
+            Warning = "#FCD34D",
+            Error = "#FCA5A5",
+            Background = "#0B0C0F",
+            Surface = "#111317",
+            AppbarBackground = "#111317",
+            DrawerBackground = "#101215",
+            DrawerText = "#E5E7EB",
+            TextPrimary = "#E5E7EB",
+            TextSecondary = "#9CA3AF",
+            ActionDefault = "#D1D5DB",
+            ActionDisabled = "#6B7280",
+            LinesDefault = "#262A31",
+            TableLines = "#262A31",
+            TableStriped = "#0D1014"
         }
     };
 }
