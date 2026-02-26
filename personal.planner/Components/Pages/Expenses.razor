@@ -1,0 +1,211 @@
+@page "/expenses"
+@inject ExpenseStore ExpenseStore
+
+<PageTitle>Expense List</PageTitle>
+
+<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <div>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.ReceiptLong" Color="Color.Primary" />
+                <MudText Typo="Typo.h4" GutterBottom="false">Expense List</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Track your expenses and payment methods.</MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.ListAlt" Label="true">
+            @($"{ExpenseStore.Expenses.Count} records")
+        </MudChip>
+    </MudStack>
+
+    <MudPaper Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">Expense Records</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    Total Expenses: @ExpenseStore.Expenses.Sum(x => x.Amount).ToString("C2")
+                </MudText>
+            </MudStack>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartAdd" StartIcon="@Icons.Material.Filled.Add">
+                Add Expense
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudDataGrid T="ExpenseRow"
+                     Items="ExpenseStore.Expenses"
+                     RowClick="OnGridRowClick"
+                     Filterable="true"
+                     SortMode="SortMode.Multiple"
+                     RowsPerPage="20"
+                     Dense="true"
+                     Hover="true"
+                     Striped="true">
+            <Columns>
+                <PropertyColumn Property="x => x.Name" Title="Name" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Description" Title="Description" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Amount" Title="Amount ($)" Sortable="true" Filterable="true" Format="C2" />
+                <PropertyColumn Property="x => x.PaidWith" Title="Paid with" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Date" Title="Date" Sortable="true" Filterable="true" Format="yyyy-MM-dd" />
+                <TemplateColumn Title="Actions" Sortable="false" Filterable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartEdit(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteExpense(context.Item.Id))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="ExpenseRow" PageSizeOptions="new int[] { 20 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudStack>
+
+@if (_isFormPopupOpen)
+{
+    <div style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.45); z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <MudPaper Class="pa-4" Elevation="8" Style="width: min(700px, 100%);">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@(_editingExpenseId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit)" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_editingExpenseId is null ? "Add Expense" : "Edit Expense")</MudText>
+                </MudStack>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
+            </MudStack>
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Name"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="_formName"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Paid with"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="_formPaidWith"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="Description"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="_formDescription"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="decimal"
+                                     Label="Amount $"
+                                     Variant="Variant.Outlined"
+                                     @bind-Value="_formAmount"
+                                     Min="0"
+                                     Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Date"
+                                   Variant="Variant.Outlined"
+                                   @bind-Date="_formDate"
+                                   Editable="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetForm" StartIcon="@Icons.Material.Filled.Close">
+                            Cancel
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveExpense" StartIcon="@Icons.Material.Filled.Save">
+                            Save
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </div>
+}
+
+@code {
+    private int? _editingExpenseId;
+    private bool _isFormPopupOpen;
+    private string _formName = string.Empty;
+    private string _formDescription = string.Empty;
+    private decimal _formAmount;
+    private string _formPaidWith = string.Empty;
+    private DateTime? _formDate = DateTime.Today;
+
+    private void StartAdd()
+    {
+        _editingExpenseId = null;
+        _formName = string.Empty;
+        _formDescription = string.Empty;
+        _formAmount = 0;
+        _formPaidWith = string.Empty;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartEdit(ExpenseRow expense)
+    {
+        _editingExpenseId = expense.Id;
+        _formName = expense.Name;
+        _formDescription = expense.Description;
+        _formAmount = expense.Amount;
+        _formPaidWith = expense.PaidWith;
+        _formDate = expense.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void OnGridRowClick(DataGridRowClickEventArgs<ExpenseRow> args)
+    {
+        if (args.MouseEventArgs.Detail == 2)
+        {
+            StartEdit(args.Item);
+        }
+    }
+
+    private void SaveExpense()
+    {
+        if (string.IsNullOrWhiteSpace(_formName) ||
+            string.IsNullOrWhiteSpace(_formDescription) ||
+            string.IsNullOrWhiteSpace(_formPaidWith) ||
+            _formDate is null)
+        {
+            return;
+        }
+
+        if (_editingExpenseId is null)
+        {
+            ExpenseStore.Add(_formName, _formDescription, _formAmount, _formPaidWith, _formDate.Value);
+        }
+        else
+        {
+            ExpenseStore.Update(_editingExpenseId.Value, _formName, _formDescription, _formAmount, _formPaidWith, _formDate.Value);
+        }
+
+        ResetForm();
+    }
+
+    private void DeleteExpense(int expenseId)
+    {
+        ExpenseStore.Delete(expenseId);
+
+        if (_editingExpenseId == expenseId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        _editingExpenseId = null;
+        _formName = string.Empty;
+        _formDescription = string.Empty;
+        _formAmount = 0;
+        _formPaidWith = string.Empty;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = false;
+    }
+}

@@ -1,0 +1,218 @@
+@page "/debts"
+@inject DebtStore DebtStore
+
+<PageTitle>Debt List</PageTitle>
+
+<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <div>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudIcon Icon="@Icons.Material.Filled.CreditCard" Color="Color.Primary" />
+                <MudText Typo="Typo.h4" GutterBottom="false">Debt List</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">Track your credit card debts and due dates.</MudText>
+        </div>
+        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.AccountBalanceWallet" Label="true">
+            @($"{DebtStore.Debts.Count} records")
+        </MudChip>
+    </MudStack>
+
+    <MudPaper Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">Debt Records</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    Total Debt: @DebtStore.Debts.Sum(x => x.Amount).ToString("C2")
+                </MudText>
+            </MudStack>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartAdd" StartIcon="@Icons.Material.Filled.Add">
+                Add Debt
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudDataGrid T="DebtRow"
+                     Items="DebtStore.Debts"
+                     RowClick="OnGridRowClick"
+                     Filterable="true"
+                     SortMode="SortMode.Multiple"
+                     RowsPerPage="20"
+                     Dense="true"
+                     Hover="true"
+                     Striped="true">
+            <Columns>
+                <PropertyColumn Property="x => x.CreditCardType" Title="Credit Card Type" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="x => x.Amount" Title="Amount ($)" Sortable="true" Filterable="true" Format="C2" />
+                <PropertyColumn Property="x => x.MinPayment" Title="Min payment ($)" Sortable="true" Filterable="true" Format="C2" />
+                <PropertyColumn Property="x => x.Date" Title="Date" Sortable="true" Filterable="true" Format="yyyy-MM-dd" />
+                <TemplateColumn Title="Actions" Sortable="false" Filterable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartEdit(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartCopy(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteDebt(context.Item.Id))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="DebtRow" PageSizeOptions="new int[] { 20 }" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudStack>
+
+@if (_isFormPopupOpen)
+{
+    <div style="position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.45); z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <MudPaper Class="pa-4" Elevation="8" Style="width: min(640px, 100%);">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@(_isCopyMode ? Icons.Material.Filled.ContentCopy : (_editingDebtId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit))" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_isCopyMode ? "Copy Debt" : (_editingDebtId is null ? "Add Debt" : "Edit Debt"))</MudText>
+                </MudStack>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
+            </MudStack>
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Credit Card Type"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="_formCreditCardType"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="decimal"
+                                     Label="Amount $"
+                                     Variant="Variant.Outlined"
+                                     @bind-Value="_formAmount"
+                                     Min="0"
+                                     Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField T="decimal"
+                                     Label="Min payment $"
+                                     Variant="Variant.Outlined"
+                                     @bind-Value="_formMinPayment"
+                                     Min="0"
+                                     Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudDatePicker Label="Date"
+                                   Variant="Variant.Outlined"
+                                   @bind-Date="_formDate"
+                                   Editable="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetForm" StartIcon="@Icons.Material.Filled.Close">
+                            Cancel
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveDebt" StartIcon="@Icons.Material.Filled.Save">
+                            Save
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </div>
+}
+
+@code {
+    private int? _editingDebtId;
+    private bool _isCopyMode;
+    private bool _isFormPopupOpen;
+    private string _formCreditCardType = string.Empty;
+    private decimal _formAmount;
+    private decimal _formMinPayment;
+    private DateTime? _formDate = DateTime.Today;
+
+    private void StartAdd()
+    {
+        _editingDebtId = null;
+        _isCopyMode = false;
+        _formCreditCardType = string.Empty;
+        _formAmount = 0;
+        _formMinPayment = 0;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartEdit(DebtRow debt)
+    {
+        _editingDebtId = debt.Id;
+        _isCopyMode = false;
+        _formCreditCardType = debt.CreditCardType;
+        _formAmount = debt.Amount;
+        _formMinPayment = debt.MinPayment;
+        _formDate = debt.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartCopy(DebtRow debt)
+    {
+        _editingDebtId = null;
+        _isCopyMode = true;
+        _formCreditCardType = debt.CreditCardType;
+        _formAmount = debt.Amount;
+        _formMinPayment = debt.MinPayment;
+        _formDate = debt.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void OnGridRowClick(DataGridRowClickEventArgs<DebtRow> args)
+    {
+        if (args.MouseEventArgs.Detail == 2)
+        {
+            StartEdit(args.Item);
+        }
+    }
+
+    private void SaveDebt()
+    {
+        if (string.IsNullOrWhiteSpace(_formCreditCardType) || _formDate is null)
+        {
+            return;
+        }
+
+        if (_editingDebtId is null)
+        {
+            DebtStore.Add(_formCreditCardType, _formAmount, _formMinPayment, _formDate.Value);
+        }
+        else
+        {
+            DebtStore.Update(_editingDebtId.Value, _formCreditCardType, _formAmount, _formMinPayment, _formDate.Value);
+        }
+
+        ResetForm();
+    }
+
+    private void DeleteDebt(int debtId)
+    {
+        DebtStore.Delete(debtId);
+
+        if (_editingDebtId == debtId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        _editingDebtId = null;
+        _isCopyMode = false;
+        _formCreditCardType = string.Empty;
+        _formAmount = 0;
+        _formMinPayment = 0;
+        _formDate = DateTime.Today;
+        _isFormPopupOpen = false;
+    }
+}
