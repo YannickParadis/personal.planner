@@ -30,6 +30,20 @@ public static class BudgetApiEndpoints
         monthlyPayments.MapPost("/", CreateMonthlyPayment);
         monthlyPayments.MapPut("/{id:int}", UpdateMonthlyPayment);
         monthlyPayments.MapDelete("/{id:int}", DeleteMonthlyPayment);
+
+        var debts = api.MapGroup("/debts").WithTags("Debts");
+        debts.MapGet("/", GetDebts);
+        debts.MapGet("/{id:int}", GetDebtById);
+        debts.MapPost("/", CreateDebt);
+        debts.MapPut("/{id:int}", UpdateDebt);
+        debts.MapDelete("/{id:int}", DeleteDebt);
+
+        var expenses = api.MapGroup("/expenses").WithTags("Expenses");
+        expenses.MapGet("/", GetExpenses);
+        expenses.MapGet("/{id:int}", GetExpenseById);
+        expenses.MapPost("/", CreateExpense);
+        expenses.MapPut("/{id:int}", UpdateExpense);
+        expenses.MapDelete("/{id:int}", DeleteExpense);
     }
 
     private static async Task<Ok<List<IncomeRow>>> GetIncomes(BudgetDbContext db) =>
@@ -232,6 +246,140 @@ public static class BudgetApiEndpoints
         return TypedResults.NoContent();
     }
 
+    private static async Task<Ok<List<DebtRow>>> GetDebts(BudgetDbContext db) =>
+        TypedResults.Ok(await db.Debts.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id).ToListAsync());
+
+    private static async Task<Results<Ok<DebtRow>, NotFound>> GetDebtById(int id, BudgetDbContext db)
+    {
+        var debt = await db.Debts.FindAsync(id);
+        return debt is null ? TypedResults.NotFound() : TypedResults.Ok(debt);
+    }
+
+    private static async Task<Results<Created<DebtRow>, ValidationProblem>> CreateDebt(DebtRequest request, BudgetDbContext db)
+    {
+        var errors = ValidateDebtRequest(request);
+        if (errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var debt = new DebtRow
+        {
+            CreditCardType = request.CreditCardType.Trim(),
+            Amount = request.Amount,
+            MinPayment = request.MinPayment,
+            Date = request.Date.Date
+        };
+
+        db.Debts.Add(debt);
+        await db.SaveChangesAsync();
+        return TypedResults.Created($"/api/debts/{debt.Id}", debt);
+    }
+
+    private static async Task<Results<Ok<DebtRow>, NotFound, ValidationProblem>> UpdateDebt(int id, DebtRequest request, BudgetDbContext db)
+    {
+        var errors = ValidateDebtRequest(request);
+        if (errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var debt = await db.Debts.FindAsync(id);
+        if (debt is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        debt.CreditCardType = request.CreditCardType.Trim();
+        debt.Amount = request.Amount;
+        debt.MinPayment = request.MinPayment;
+        debt.Date = request.Date.Date;
+        await db.SaveChangesAsync();
+
+        return TypedResults.Ok(debt);
+    }
+
+    private static async Task<Results<NoContent, NotFound>> DeleteDebt(int id, BudgetDbContext db)
+    {
+        var debt = await db.Debts.FindAsync(id);
+        if (debt is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        db.Debts.Remove(debt);
+        await db.SaveChangesAsync();
+        return TypedResults.NoContent();
+    }
+
+    private static async Task<Ok<List<ExpenseRow>>> GetExpenses(BudgetDbContext db) =>
+        TypedResults.Ok(await db.Expenses.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id).ToListAsync());
+
+    private static async Task<Results<Ok<ExpenseRow>, NotFound>> GetExpenseById(int id, BudgetDbContext db)
+    {
+        var expense = await db.Expenses.FindAsync(id);
+        return expense is null ? TypedResults.NotFound() : TypedResults.Ok(expense);
+    }
+
+    private static async Task<Results<Created<ExpenseRow>, ValidationProblem>> CreateExpense(ExpenseRequest request, BudgetDbContext db)
+    {
+        var errors = ValidateExpenseRequest(request);
+        if (errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var expense = new ExpenseRow
+        {
+            Name = request.Name.Trim(),
+            Description = request.Description.Trim(),
+            Amount = request.Amount,
+            PaidWith = request.PaidWith.Trim(),
+            Date = request.Date.Date
+        };
+
+        db.Expenses.Add(expense);
+        await db.SaveChangesAsync();
+        return TypedResults.Created($"/api/expenses/{expense.Id}", expense);
+    }
+
+    private static async Task<Results<Ok<ExpenseRow>, NotFound, ValidationProblem>> UpdateExpense(int id, ExpenseRequest request, BudgetDbContext db)
+    {
+        var errors = ValidateExpenseRequest(request);
+        if (errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var expense = await db.Expenses.FindAsync(id);
+        if (expense is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        expense.Name = request.Name.Trim();
+        expense.Description = request.Description.Trim();
+        expense.Amount = request.Amount;
+        expense.PaidWith = request.PaidWith.Trim();
+        expense.Date = request.Date.Date;
+        await db.SaveChangesAsync();
+
+        return TypedResults.Ok(expense);
+    }
+
+    private static async Task<Results<NoContent, NotFound>> DeleteExpense(int id, BudgetDbContext db)
+    {
+        var expense = await db.Expenses.FindAsync(id);
+        if (expense is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        db.Expenses.Remove(expense);
+        await db.SaveChangesAsync();
+        return TypedResults.NoContent();
+    }
+
     private static Dictionary<string, string[]> ValidateIncomeRequest(IncomeRequest request)
     {
         var errors = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
@@ -326,6 +474,71 @@ public static class BudgetApiEndpoints
 
         return errors;
     }
+
+    private static Dictionary<string, string[]> ValidateDebtRequest(DebtRequest request)
+    {
+        var errors = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+
+        if (string.IsNullOrWhiteSpace(request.CreditCardType))
+        {
+            errors["creditCardType"] = ["Credit card type is required."];
+        }
+        else if (request.CreditCardType.Trim().Length > 120)
+        {
+            errors["creditCardType"] = ["Credit card type cannot exceed 120 characters."];
+        }
+
+        if (request.Amount < 0)
+        {
+            errors["amount"] = ["Amount must be greater than or equal to 0."];
+        }
+
+        if (request.MinPayment < 0)
+        {
+            errors["minPayment"] = ["Min payment must be greater than or equal to 0."];
+        }
+
+        return errors;
+    }
+
+    private static Dictionary<string, string[]> ValidateExpenseRequest(ExpenseRequest request)
+    {
+        var errors = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            errors["name"] = ["Name is required."];
+        }
+        else if (request.Name.Trim().Length > 140)
+        {
+            errors["name"] = ["Name cannot exceed 140 characters."];
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Description))
+        {
+            errors["description"] = ["Description is required."];
+        }
+        else if (request.Description.Trim().Length > 260)
+        {
+            errors["description"] = ["Description cannot exceed 260 characters."];
+        }
+
+        if (request.Amount < 0)
+        {
+            errors["amount"] = ["Amount must be greater than or equal to 0."];
+        }
+
+        if (string.IsNullOrWhiteSpace(request.PaidWith))
+        {
+            errors["paidWith"] = ["Paid with is required."];
+        }
+        else if (request.PaidWith.Trim().Length > 100)
+        {
+            errors["paidWith"] = ["Paid with cannot exceed 100 characters."];
+        }
+
+        return errors;
+    }
 }
 
 public sealed class IncomeRequest
@@ -371,6 +584,39 @@ public sealed class MonthlyPaymentRequest
 
     [JsonPropertyName("amount")]
     public decimal Amount { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public sealed class DebtRequest
+{
+    [JsonPropertyName("creditCardType")]
+    public string CreditCardType { get; set; } = string.Empty;
+
+    [JsonPropertyName("amount")]
+    public decimal Amount { get; set; }
+
+    [JsonPropertyName("minPayment")]
+    public decimal MinPayment { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public sealed class ExpenseRequest
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
+
+    [JsonPropertyName("amount")]
+    public decimal Amount { get; set; }
+
+    [JsonPropertyName("paidWith")]
+    public string PaidWith { get; set; } = string.Empty;
 
     [JsonPropertyName("date")]
     public DateTime Date { get; set; }

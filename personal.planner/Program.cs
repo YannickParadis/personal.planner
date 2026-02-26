@@ -21,6 +21,8 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<ThemeState>();
 builder.Services.AddScoped<IncomeStore>();
 builder.Services.AddScoped<MonthlyPaymentStore>();
+builder.Services.AddScoped<DebtStore>();
+builder.Services.AddScoped<ExpenseStore>();
 builder.Services.AddScoped<SavingsStore>();
 builder.Services.AddScoped<ReminderStore>();
 

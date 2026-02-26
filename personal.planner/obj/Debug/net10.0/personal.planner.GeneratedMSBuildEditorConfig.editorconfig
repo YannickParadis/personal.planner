@@ -22,81 +22,89 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = personal.planner
 build_property.RootNamespace = personal.planner
-build_property.ProjectDir = C:\repos\personal.planner\personal.planner\
+build_property.ProjectDir = /Users/yannickparadis/RiderProjects/personal.planner/personal.planner/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\repos\personal.planner\personal.planner
+build_property.MSBuildProjectDirectory = /Users/yannickparadis/RiderProjects/personal.planner/personal.planner
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/repos/personal.planner/personal.planner/Components/App.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/App.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyLnJhem9y
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Db3VudGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Error.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Debts.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9EZWJ0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Incomes.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xJbmNvbWVzLnJhem9y
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Error.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/MonthlyPayments.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNb250aGx5UGF5bWVudHMucmF6b3I=
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Expenses.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FeHBlbnNlcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/NotFound.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Incomes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9JbmNvbWVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Savings.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xTYXZpbmdzLnJhem9y
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/MonthlyPayments.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Nb250aGx5UGF5bWVudHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/NotFound.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ob3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Routes.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Savings.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9TYXZpbmdzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/_Imports.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9XZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Layout/AuthLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcQXV0aExheW91dC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-cj9jsxu12x
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Sb3V0ZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Layout/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-ocl0pje909
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9fSW1wb3J0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
 
-[C:/repos/personal.planner/personal.planner/Components/Layout/NavMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-u1kl6488qh
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Layout/AuthLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvQXV0aExheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-zf9lx0yzjd
 
-[C:/repos/personal.planner/personal.planner/Components/Layout/ReconnectModal.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcUmVjb25uZWN0TW9kYWwucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-xzi8xgq755
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTWFpbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-oyeih4nqat
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
-build_metadata.AdditionalFiles.CssScope = b-rar8n8w7ow
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTmF2TWVudS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-qtipeedcsa
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Login.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xMb2dpbi5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-qaw2la2tvw
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Layout/ReconnectModal.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvUmVjb25uZWN0TW9kYWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ekfxxttcnt
 
-[C:/repos/personal.planner/personal.planner/Components/Pages/Reminders.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSZW1pbmRlcnMucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-q9rt85lbc4
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ib21lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-1rrmk31n7d
+
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-9soeht1i57
+
+[/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/Components/Pages/Reminders.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9SZW1pbmRlcnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-fi360a0ee7

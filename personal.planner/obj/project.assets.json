@@ -2927,31 +2927,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\yanni\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/Users/yannickparadis/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj",
+      "projectUniqueName": "/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/personal.planner.csproj",
       "projectName": "personal.planner",
-      "projectPath": "C:\\repos\\personal.planner\\personal.planner\\personal.planner.csproj",
-      "packagesPath": "C:\\Users\\yanni\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\personal.planner\\personal.planner\\obj\\",
+      "projectPath": "/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/personal.planner.csproj",
+      "packagesPath": "/Users/yannickparadis/.nuget/packages/",
+      "outputPath": "/Users/yannickparadis/RiderProjects/personal.planner/personal.planner/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\yanni\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/yannickparadis/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3020,7 +3013,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.103/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

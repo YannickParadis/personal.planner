@@ -69,6 +69,10 @@
                                        Color="Color.Primary"
                                        Size="Size.Small"
                                        OnClick="@(() => StartEdit(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartCopy(context.Item))" />
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"
                                        Size="Size.Small"
@@ -89,8 +93,8 @@
         <MudPaper Class="pa-4" Elevation="8" Style="width: min(640px, 100%);">
             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                    <MudIcon Icon="@(_editingIncomeId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit)" Size="Size.Small" />
-                    <MudText Typo="Typo.h6">@(_editingIncomeId is null ? "Add Income" : "Edit Income")</MudText>
+                    <MudIcon Icon="@(_isCopyMode ? Icons.Material.Filled.ContentCopy : (_editingIncomeId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit))" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_isCopyMode ? "Copy Income" : (_editingIncomeId is null ? "Add Income" : "Edit Income"))</MudText>
                 </MudStack>
                 <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
             </MudStack>
@@ -141,6 +145,7 @@
 
 @code {
     private int? _editingIncomeId;
+    private bool _isCopyMode;
     private bool _isFormPopupOpen;
     private decimal _formAmount;
     private decimal _formTaxAmount;
@@ -150,6 +155,7 @@
     private void StartAdd()
     {
         _editingIncomeId = null;
+        _isCopyMode = false;
         _formAmount = 0;
         _formTaxAmount = 0;
         _formType = string.Empty;
@@ -160,6 +166,18 @@
     private void StartEdit(IncomeRow income)
     {
         _editingIncomeId = income.Id;
+        _isCopyMode = false;
+        _formAmount = income.Amount;
+        _formTaxAmount = income.TaxAmount;
+        _formType = income.Type;
+        _formDate = income.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartCopy(IncomeRow income)
+    {
+        _editingIncomeId = null;
+        _isCopyMode = true;
         _formAmount = income.Amount;
         _formTaxAmount = income.TaxAmount;
         _formType = income.Type;
@@ -207,6 +225,7 @@
     private void ResetForm()
     {
         _editingIncomeId = null;
+        _isCopyMode = false;
         _formAmount = 0;
         _formTaxAmount = 0;
         _formType = string.Empty;

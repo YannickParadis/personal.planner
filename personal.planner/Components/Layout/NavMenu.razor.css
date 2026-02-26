@@ -19,19 +19,20 @@
     min-height: 3.5rem;
     background-color: var(--mud-palette-surface);
     border-bottom: 1px solid var(--mud-palette-lines-default);
+    padding: 0.6rem 0;
 }
 
-.navbar-brand {
-    font-size: 1.1rem;
-    color: var(--mud-palette-text-primary);
-    padding: 0.2rem 0;
+.sidebar-brand {
+    display: block;
     width: 100%;
-    max-width: none;
+    color: inherit;
+    text-decoration: none;
 }
 
-.brand-logo {
+.sidebar-logo {
     width: 100%;
-    max-height: none;
+    max-width: 100%;
+    max-height: 88px;
     height: auto;
     display: block;
     object-fit: contain;

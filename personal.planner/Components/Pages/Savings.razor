@@ -52,6 +52,10 @@
                                        Color="Color.Primary"
                                        Size="Size.Small"
                                        OnClick="@(() => StartEdit(context.Item))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => StartCopy(context.Item))" />
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"
                                        Size="Size.Small"
@@ -72,8 +76,8 @@
         <MudPaper Class="pa-4" Elevation="8" Style="width: min(640px, 100%);">
             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                    <MudIcon Icon="@(_editingSavingsId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit)" Size="Size.Small" />
-                    <MudText Typo="Typo.h6">@(_editingSavingsId is null ? "Add Savings" : "Edit Savings")</MudText>
+                    <MudIcon Icon="@(_isCopyMode ? Icons.Material.Filled.ContentCopy : (_editingSavingsId is null ? Icons.Material.Filled.AddCircle : Icons.Material.Filled.Edit))" Size="Size.Small" />
+                    <MudText Typo="Typo.h6">@(_isCopyMode ? "Copy Savings" : (_editingSavingsId is null ? "Add Savings" : "Edit Savings"))</MudText>
                 </MudStack>
                 <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="ResetForm" />
             </MudStack>
@@ -122,6 +126,7 @@
 
 @code {
     private int? _editingSavingsId;
+    private bool _isCopyMode;
     private bool _isFormPopupOpen;
     private string _formDescription = string.Empty;
     private decimal _formAmount;
@@ -131,6 +136,7 @@
     private void StartAdd()
     {
         _editingSavingsId = null;
+        _isCopyMode = false;
         _formDescription = string.Empty;
         _formAmount = 0;
         _formAccountName = string.Empty;
@@ -141,6 +147,18 @@
     private void StartEdit(SavingsRow savings)
     {
         _editingSavingsId = savings.Id;
+        _isCopyMode = false;
+        _formDescription = savings.Description;
+        _formAmount = savings.Amount;
+        _formAccountName = savings.AccountName;
+        _formDate = savings.Date;
+        _isFormPopupOpen = true;
+    }
+
+    private void StartCopy(SavingsRow savings)
+    {
+        _editingSavingsId = null;
+        _isCopyMode = true;
         _formDescription = savings.Description;
         _formAmount = savings.Amount;
         _formAccountName = savings.AccountName;
@@ -190,6 +208,7 @@
     private void ResetForm()
     {
         _editingSavingsId = null;
+        _isCopyMode = false;
         _formDescription = string.Empty;
         _formAmount = 0;
         _formAccountName = string.Empty;

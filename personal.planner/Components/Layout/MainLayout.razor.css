@@ -1,7 +1,9 @@
-.page {
+.layout-shell {
     position: relative;
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
     background-color: var(--mud-palette-background);
     color: var(--mud-palette-text-primary);
     min-height: 100vh;
@@ -9,6 +11,7 @@
 
 main {
     flex: 1;
+    min-width: 0;
     background-color: var(--mud-palette-background);
 }
 

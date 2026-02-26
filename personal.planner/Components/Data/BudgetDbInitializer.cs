@@ -9,6 +9,25 @@ public static class BudgetDbInitializer
         db.Database.EnsureCreated();
         EnsureRemindersSchema(db);
         db.Database.ExecuteSqlRaw("""
+            CREATE TABLE IF NOT EXISTS Debts (
+                Id INTEGER NOT NULL CONSTRAINT PK_Debts PRIMARY KEY AUTOINCREMENT,
+                CreditCardType TEXT NOT NULL DEFAULT '',
+                Amount TEXT NOT NULL DEFAULT '0',
+                MinPayment TEXT NOT NULL DEFAULT '0',
+                Date TEXT NOT NULL DEFAULT '2026-02-20'
+            );
+            """);
+        db.Database.ExecuteSqlRaw("""
+            CREATE TABLE IF NOT EXISTS Expenses (
+                Id INTEGER NOT NULL CONSTRAINT PK_Expenses PRIMARY KEY AUTOINCREMENT,
+                Name TEXT NOT NULL DEFAULT '',
+                Description TEXT NOT NULL DEFAULT '',
+                Amount TEXT NOT NULL DEFAULT '0',
+                PaidWith TEXT NOT NULL DEFAULT '',
+                Date TEXT NOT NULL DEFAULT '2026-02-20'
+            );
+            """);
+        db.Database.ExecuteSqlRaw("""
             CREATE TABLE IF NOT EXISTS Reminders (
                 Id INTEGER NOT NULL CONSTRAINT PK_Reminders PRIMARY KEY AUTOINCREMENT,
                 Title TEXT NOT NULL DEFAULT '',
@@ -47,6 +66,24 @@ public static class BudgetDbInitializer
                 new MonthlyPaymentRow { Name = "Internet", Type = "Utilities", PaymentType = "Auto Debit", Amount = 69.99m, Date = new DateTime(2026, 2, 5) },
                 new MonthlyPaymentRow { Name = "Car Insurance", Type = "Insurance", PaymentType = "Credit Card", Amount = 185m, Date = new DateTime(2026, 2, 8) },
                 new MonthlyPaymentRow { Name = "Gym Membership", Type = "Health", PaymentType = "Auto Debit", Amount = 45m, Date = new DateTime(2026, 2, 10) }
+            );
+        }
+
+        if (!db.Debts.Any())
+        {
+            db.Debts.AddRange(
+                new DebtRow { CreditCardType = "Visa", Amount = 2200m, MinPayment = 65m, Date = new DateTime(2026, 2, 7) },
+                new DebtRow { CreditCardType = "Mastercard", Amount = 890m, MinPayment = 35m, Date = new DateTime(2026, 2, 12) },
+                new DebtRow { CreditCardType = "Amex", Amount = 1450m, MinPayment = 52m, Date = new DateTime(2026, 2, 18) }
+            );
+        }
+
+        if (!db.Expenses.Any())
+        {
+            db.Expenses.AddRange(
+                new ExpenseRow { Name = "Groceries", Description = "Weekly grocery shopping", Amount = 148.75m, PaidWith = "Visa", Date = new DateTime(2026, 2, 8) },
+                new ExpenseRow { Name = "Gas", Description = "Car fuel", Amount = 62.10m, PaidWith = "Debit Card", Date = new DateTime(2026, 2, 11) },
+                new ExpenseRow { Name = "Dining Out", Description = "Dinner with family", Amount = 84.40m, PaidWith = "Mastercard", Date = new DateTime(2026, 2, 16) }
             );
         }
 
